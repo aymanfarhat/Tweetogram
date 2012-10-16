@@ -45,7 +45,7 @@ $trendingData = json_decode(@file_get_contents("https://api.twitter.com/1/trends
 						<div class="result" id="result"></div>
 					<div class="clr"></div>
 				</div>
-			<div id="footer">Mini Project by <a href="http://www.aymanfarhat.com">Ayman Farhat</a>. Source available on <a href="#">Github</a>.</div>
+				<div id="footer">Mini Project by <a href="http://www.aymanfarhat.com">Ayman Farhat</a>. Source available on <a href="https://github.com/aymanfarhat/Tweetogram.git">Github</a>.</div>
 			</div>
 			<div class="clr"></div>
 		</div>
