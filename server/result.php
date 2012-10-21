@@ -1,14 +1,16 @@
 <?php
 
-$TOKEN = "240112712.dff4a66.329513a0b84c44d9a9d7fcebabeb577d";
-$COUNT = 20;
+$TOKEN = $YOUR_TOKEN_HERE; // Your instagram token, used to access the API
+$COUNT = 20; // Number of images to appear
 
+
+// Return user related issues
 if(isset($_GET["user"]) && !empty($_GET["user"])) {
 
-	$user = $_GET["user"];
-	$hashtags = array();
+	$user = $_GET["user"]; // The user
+	$hashtags = array(); // Hashtags we will search for in Instagram
 
-	// Check if the user is on instagram
+	// Check if the user is on instagram and display his information
 	$user_on_instagram = false;
 	$checkIfUserOnInstagram = json_decode(@file_get_contents("https://api.instagram.com/v1/users/search?q=".$user."&access_token=".$TOKEN));
 	if(count($checkIfUserOnInstagram->data) > 0) {
@@ -21,7 +23,7 @@ if(isset($_GET["user"]) && !empty($_GET["user"])) {
 		<h2>".$u->bio."</h2></div>";
 	}
 
-	// Check if the user is on twitter
+	// Check if the user is on twitter and list all his information
 	$checkIfUserOnTwitter = @file_get_contents("https://api.twitter.com/1/users/show.json?screen_name=".$user."&include_entities=true");
 	$user_on_twitter = false;
 	if($checkIfUserOnTwitter) {
@@ -42,7 +44,7 @@ if(isset($_GET["user"]) && !empty($_GET["user"])) {
 		}
 	}
 
-	// Dissect the tweets and getting the hashtags
+	// If the user is on Twitter list the last 5 tweets, additionally get all the hashtags in the tweet
 	if($user_on_twitter) {
 		$tweetsOfUser = json_decode(@file_get_contents("http://search.twitter.com/search.json?q=from:".$user."&rpp=5"));
 		$tweets = $tweetsOfUser->results;
@@ -65,7 +67,7 @@ if(isset($_GET["user"]) && !empty($_GET["user"])) {
 	}
 
 
-	// Showing the images related to the hashtags
+	// Search in instagram for all the images related to each hashtag found earlier while digging throught the tweets
 	for($i=0;$i<count($hashtags);$i++) {
 		if(urlencode($hashtags[$i]) != "") {
 			echo "<h3>Photos about ".$hashtags[$i]."</h3>";
@@ -81,6 +83,8 @@ if(isset($_GET["user"]) && !empty($_GET["user"])) {
 			echo "</ul><div class='clear'></div>";
 		}
 	}
+
+	// If the user is on instagram show the last $COUNT image he posted there
 	if($user_on_instagram) {
 		$feed = json_decode(@file_get_contents("https://api.instagram.com/v1/users/".$user_id."/media/recent?q=".$user."&access_token=".$TOKEN));
 		echo "<h3>Latest Images from ".$user."</h3>";
@@ -94,7 +98,7 @@ if(isset($_GET["user"]) && !empty($_GET["user"])) {
 		echo "</ul><div class='clear'></div>";
 	}
 
-
+// If the user chose to search for a hashtag then return the last $COUNT images on instagram
 } else if (isset($_GET["hash"]) && !empty($_GET["hash"])) {
 
 	// Search Instagram's API for images with tags similar to the one provided
@@ -110,6 +114,7 @@ if(isset($_GET["user"]) && !empty($_GET["user"])) {
 	}
 	echo "</ul>";
 
+// IF the user did not choose a tag or a user then we return an invalid request message
 } else {
 	echo "Invalid Request";
 }
