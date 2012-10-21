@@ -1,36 +1,38 @@
-var opts = {
-  lines: 12,
-  length: 15,
-  width: 6,
-  radius: 30,
-  color: '#3f8df9',
-  speed: 2,
-  trail: 100,
-  shadow: false
-};
-
-$(document).ready(function(){
-	var target = document.getElementById('result');
-	var spinner = new Spinner(opts);
-	
-	$('.fancybox').fancybox();
-
-	$("#nav ul li a").click(function(){
-		$('.result').html("");
-		spinner.spin(target);
-
-		var url = $(this).attr("href");
-		
-		$("#nav ul li a").removeClass("selected");
-
-		$(this).addClass("selected");
-
-		$.get(url,function(data){
-			spinner.stop();
-			$('.result').html(data);
-		});
-		return false;
+function clickHash() {
+	$(".hashclick").click(function() {
+		loadContent({"hash":this.innerHTML});
 	});
-
-
-});
+}
+function loadContent(obj) {
+	var image = $("<img>").attr({"src":"assets/images/loading.gif","class":"loading"});
+	$("#imagecontainer").empty();
+	$("#imagecontainer").append(image);
+	if(obj.user) {
+		$.ajax({
+			type:"GET",
+			url: "server/result.php?user="+obj.user,
+			success:function(data) {
+				$("#imagecontainer").html(data);
+				$('html, body').animate({scrollTop: $("input").offset().top-10}, 1000, "swing");
+				clickHash();
+			},
+			error: function() {
+				console.log("ERROR");
+			}
+		});
+	} else if (obj.hash) {
+		var hash = obj.hash.replace(/[\s+|#]?/gi,"");
+		window.location.hash = hash;
+		$.ajax({
+			type:"GET",
+			url: "server/result.php?hash="+hash,
+			success:function(data) {
+				$("#imagecontainer").html(data);
+				$('html, body').animate({scrollTop: $("input").offset().top-10}, 1000, "swing");
+			},
+			error: function() {
+				console.log("ERROR");
+			}
+		});
+	}
+}
