@@ -1,6 +1,6 @@
 <?php
 
-$TOKEN = "240112712.dff4a66.329513a0b84c44d9a9d7fcebabeb577d"; // Your instagram token, used to access the API
+$TOKEN = "YOUR_INSTAGRAM_ACCESS_TOKEN"; // Your instagram token, used to access the API
 $COUNT = 20; // Number of images to appear
 
 // Return user related issues
