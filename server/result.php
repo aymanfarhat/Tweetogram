@@ -1,11 +1,10 @@
 <?php
 
-$TOKEN = $YOUR_TOKEN_HERE; // Your instagram token, used to access the API
+$TOKEN = "240112712.dff4a66.329513a0b84c44d9a9d7fcebabeb577d"; // Your instagram token, used to access the API
 $COUNT = 20; // Number of images to appear
 
-
 // Return user related issues
-if(isset($_GET["user"]) && !empty($_GET["user"])) {
+if(isset($_GET["user"]) && !empty($_GET["user"]) && isAjax()) {
 
 	$user = $_GET["user"]; // The user
 	$hashtags = array(); // Hashtags we will search for in Instagram
@@ -17,8 +16,11 @@ if(isset($_GET["user"]) && !empty($_GET["user"])) {
 		$user_on_instagram = true;
 		$u = $checkIfUserOnInstagram->data[0];
 		$user_id = $u->id;
+		
+		$instagramFullName = (strlen($u->full_name) > 0)?"($u->full_name)":"";
+
 		echo "<div class='instagramprofile'>
-		<h1>".$u->username." (".$u->full_name.")</h1>
+		<h1>".$u->username.$instagramFullName."</h1>
 		<img src='".$u->profile_picture."'>
 		<h2>".$u->bio."</h2></div>";
 	}
@@ -26,9 +28,10 @@ if(isset($_GET["user"]) && !empty($_GET["user"])) {
 	// Check if the user is on twitter and list all his information
 	$checkIfUserOnTwitter = @file_get_contents("https://api.twitter.com/1/users/show.json?screen_name=".$user."&include_entities=true");
 	$user_on_twitter = false;
-	if($checkIfUserOnTwitter) {
+	
+	if($checkIfUserOnTwitter) 
+	{
 		$checkIfUserOnTwitter = json_decode($checkIfUserOnTwitter);
-		if($checkIfUserOnTwitter->errors[0]->code != 34) {
 			$user_on_twitter = true;
 			echo "<div class='twitterprofile'>
 				<h1>@".$checkIfUserOnTwitter->screen_name." (".$checkIfUserOnTwitter->name.")</h1>
@@ -41,7 +44,6 @@ if(isset($_GET["user"]) && !empty($_GET["user"])) {
 				</ul>
 				<div class='clear'></div>
 			</div>";
-		}
 	}
 
 	// If the user is on Twitter list the last 5 tweets, additionally get all the hashtags in the tweet
@@ -77,7 +79,7 @@ if(isset($_GET["user"]) && !empty($_GET["user"])) {
 			$json = $json->data;
 			if(gettype($json) == "array") {
 				foreach ($json as $img) {
-					echo "<li data-src='".$img->images->standard_resolution->url."' data-imageid='".$img->caption->id."' data-userid='".$img->from->id."'><a href='".$img->link."' target='_blank'><img src='".$img->images->thumbnail->url."'></a></li>";
+					echo "<li><a href='".$img->link."' target='_blank'><img src='".$img->images->thumbnail->url."'></a></li>";
 				}
 			}
 			echo "</ul><div class='clear'></div>";
@@ -92,14 +94,14 @@ if(isset($_GET["user"]) && !empty($_GET["user"])) {
 		$feed = $feed->data;
 		if(gettype($feed)=="array") {
 			foreach ($feed as $img) {
-				echo "<li data-src='".$img->images->standard_resolution->url."' data-imageid='".$img->caption->id."' data-userid='".$img->from->id."'><a href='".$img->link."' target='_blank'><img src='".$img->images->thumbnail->url."'></a></li>";
+				echo "<li><a href='".$img->link."' target='_blank'><img src='".$img->images->thumbnail->url."'></a></li>";
 			}
 		}
 		echo "</ul><div class='clear'></div>";
 	}
 
 // If the user chose to search for a hashtag then return the last $COUNT images on instagram
-} else if (isset($_GET["hash"]) && !empty($_GET["hash"])) {
+} else if (isset($_GET["hash"]) && !empty($_GET["hash"]) && isAjax()) {
 
 	// Search Instagram's API for images with tags similar to the one provided
 	$h = preg_replace("/[^a-zA-Z0-9]*/i", "", $_GET["hash"]); 
@@ -109,17 +111,17 @@ if(isset($_GET["user"]) && !empty($_GET["user"])) {
 		$json = json_decode($json);
 		$json = $json->data;
 		foreach ($json as $img) {
-			echo "<li data-src='".$img->images->standard_resolution->url."' data-imageid='".$img->caption->id."' data-userid='".$img->from->id."'><a href='".$img->link."' target='_blank'><img src='".$img->images->thumbnail->url."'></a></li>";
+			echo "<li><a href='".$img->link."' target='_blank'><img src='".$img->images->thumbnail->url."'></a></li>";
 		}
 	}
 	echo "</ul>";
 
 // IF the user did not choose a tag or a user then we return an invalid request message
-} else {
-	echo "Invalid Request";
+} else { echo "Invalid Request"; }
+
+/* Checks if a request is ajax */
+function isAjax(){
+	return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 }
-
-
-
 
 ?>

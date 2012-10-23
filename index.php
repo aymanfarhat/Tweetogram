@@ -12,41 +12,36 @@
 		<link rel="stylesheet" href="assets/css/style.css" />
 		<link rel="stylesheet" href="assets/css/ajax.css" />
 	</head>
-
-
 	<body>
-
 		<div class="header">
 			<img src="assets/images/logo.png" alt="Tweetogram" />
 			<h1><a href="index.php">Tweetogram</a></h1>
+			<h2>Discover Instagram Photos Related to Twitter Trends and Users.</h2>
 		</div>
-
 		<div class="container">
-			<div class="twitteruser">@<input type="text" id="twitteruser" placeholder=" -   Twitter or Instagram user"></div>
-			<ul class="hashtags">
-			<?php
-				$json = json_decode(file_get_contents("https://api.twitter.com/1/trends/1.json"));
-				for($i=0;$i<count($json[0]->trends);$i++) {
-					echo "<li class='hashclick'>".$json[0]->trends[$i]->name."</li>";
-				}
-			?>
-			</ul>
-			<div class="clear"></div>
+			<div class="twitteruser">@<input type="text" id="twitteruser" placeholder=" -  Twitter or Instagram user"></div>
+			<?php $trendingData = json_decode(@file_get_contents("https://api.twitter.com/1/trends/1.json")); ?>
+			<?php if($trendingData != null && count($trendingData[0]->trends) > 0): ?>
+				<ul class="hashtags">
+					<?php foreach($trendingData[0]->trends as $trend): ?>
+						<?php if(mb_check_encoding($trend->name,'ASCII')): ?>
+							<li class="hashclick"><?php echo $trend->name;?></li>
+						<?php endif; ?>
+					<?php endforeach; ?>
+				<div class="clear"></div>
+				</ul>
+			<?php else: ?>
+				<span class="error">We Couldn't find any trending data for now, please come back later!</span>
+			<?php endif; ?>
+		<div class="clear"></div>
 		</div>
-
 		<div id="imagecontainer" class="imagecontainer">
-			
 		</div>
 		<div class="clear"></div>
-
 		<div class="footer">
-			Copyleft <span class="copyleft">&copy;</span> 2012 - Based on <a href="http://tweetogram.aymanfarhat.com" target="_blank">Ayman Farhat's Tweetogram</a> - Available on <a href="http://github.com/aymanfarhat/tweetogram" target="_blank">github</a>
+			Mini project by <a href="http://aymanfarhat.com">Ayman Farhat</a> and <a href="http://george.zakhour.me/">George Zakhour</a> - Source svailable on <a href="http://github.com/aymanfarhat/tweetogram" target="_blank">github</a>
 		</div>
-
-
-
-		<script>
-		//$(document).load(function(){
+		<script type="text/javascript">
 			$("input").focus();
 			clickHash();
 			$("input").keypress(function(e) {
@@ -55,9 +50,6 @@
 					loadContent({"user":this.value});
 				}
 			});
-		//});
 		</script>
-
 	</body>
-
 </html>

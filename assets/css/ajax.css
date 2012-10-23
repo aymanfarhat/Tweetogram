@@ -2,14 +2,16 @@
 	color: #444;
 	padding-left: 35px;
 	background: url("../images/instagram_logo.jpeg") no-repeat;
-	background-position: 0px 27px;
+	background-position: 0px 22px;
+	margin-bottom:10px;
 }
 .instagramprofile h1, .twitterprofile h1 {
 	padding-top: 20px;
-	font-size: 28px;
+	font-size: 20px;
 	font-weight: 200;
 	letter-spacing: 4px;
 	text-shadow: 1px 1px 0px #fff;
+	margin-bottom:12px;
 }
 .instagramprofile img, .twitterprofile img {
 	width: 100px;
@@ -23,15 +25,17 @@
 	font-size: 18px;
 	font-weight: 200;
 	text-shadow: 1px 1px 0px #fff;
+	margin-bottom:10px;
+	line-height:25px;
 }
-
 
 .twitterprofile {
 	color: #444;
 	padding-left: 35px;
 	background: url("../images/twitter_logo.png") no-repeat;
-	background-position: -2px 20px;
+	background-position: -2px 16px;
 	text-shadow: 1px 1px 0px #fff;
+	margin-bottom:10px;
 }
 .twitterprofile img {
 	width: 50px;
@@ -45,10 +49,10 @@
 
 .twittertweets li {
 	padding: 10px;
-	margin-left: -20px;
 	padding-left: 40px;
 	background: url("../images/twitter_logo.png") no-repeat;
-	background-position: 0px 3px;
+	background-position: 0px 6px;
+	line-height:20px;
 }
 h3 {
 	display: block;
@@ -57,7 +61,6 @@ h3 {
 	font-weight: 200;
 	letter-spacing: 3px;
 	padding-top: 30px;
-	padding-left: 50px;
 }
 .instagramfeed li {
 	list-style:none;
